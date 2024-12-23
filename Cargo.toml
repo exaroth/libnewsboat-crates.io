@@ -1,0 +1,58 @@
+[package]
+name = "libnewsboat"
+version = "2.38.0"
+authors = ["Alexander Batischev <eual.jp@gmail.com>"]
+edition = "2021"
+# ==============
+readme = "README.md"
+description = "Utility libraries used by Newsboat reader"
+homepage = "https://github.com/newsboat/newsboat"
+repository = "https://github.com/exaroth/libnewsboat-crates.io"
+
+[dependencies]
+strprintf = "0.1.0"
+regex-rs = "0.1.0"
+
+fastrand = "2.3.0"
+url = "2.5.4"
+percent-encoding = "2.3.1"
+xdg = "2.5.2"
+backtrace = "= 0.3"
+unicode-width = "0.2.0"
+nom = "7"
+libc = "0.2"
+natord = "1.0.9"
+md5 = "0.7.0"
+lexopt = "0.3.0"
+chrono = "0.4.39"
+unicode-segmentation = "1.12.0"
+
+[dependencies.gettext-rs]
+version = "0.7.2"
+# Don't let the crate build its own copy of gettext; force it to use the one
+# built into glibc.
+features = [ "gettext-system" ]
+
+[dependencies.curl-sys]
+version = "0.4.78"
+# This disables the only default feature, "ssl". It doesn't affect the
+# functionality, since it can't affect the libcurl.so available on the host.
+#
+# curl-sys, like other -sys crates, contains a tarball with the native library
+# (i.e. Curl). It first tries to find the compiled library on the host, but if
+# it can't, it unpacks the tarball and tries to build the library from source.
+# The "ssl" feature of the crate instructs the build to find and link OpenSSL
+# (or equivalent). For that, it pulls in openssl-sys crate, which during its
+# configuration stage looks for OpenSSL header files.
+#
+# Since Newsboat requires both Curl and SSL libraries to be already compiled
+# and available on the host, we don't need any of this business. In fact,
+# openssl-sys introduces an unwanted dependency on OpenSSL headers, which
+# exists even if we're linking (via libcurl) against another SSL library like
+# GnuTLS. We disable this feature to avoid the dependency.
+default-features = false
+
+[dev-dependencies]
+tempfile = "3"
+proptest = "1"
+section_testing = "0.0.5"
